@@ -11,7 +11,7 @@ import { DatabaseModule } from './database/database.module';
 import { enviroments } from './enviroments';
 import config from './config';
 
-const uri = 'mongodb://root:root@localhost:27017/';
+const uri = 'mongodb://root:root@localhost:27017/?authSource=admin';
 
 const client = new MongoClient(uri);
 async function run() {
