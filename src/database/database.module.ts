@@ -1,5 +1,6 @@
 import { Module, Global } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
+import mongoose, { Mongoose } from 'mongoose'
 import { MongoClient } from 'mongodb';
 
 import config from '../config';
@@ -17,19 +18,11 @@ const API_KEY_PROD = 'PROD1212121SA';
     {
       provide: 'MONGO',
       useFactory: async (configService: ConfigType<typeof config>) => {
-        const {
-          connection,
-          user,
-          password,
-          host,
-          port,
-          dbName, } = configService.mongo;
-        const uri =
-          `${connection}://${user}:${password}@${host}:${port}/?authSource=admin`;
-        const client = new MongoClient(uri);
-        await client.connect();
-        const database = client.db(dbName);
-        return database;
+        const { uri, dbName } = configService.mongo;
+        await mongoose.connect(uri, {
+          dbName,
+        });
+        return mongoose.connection.db;
       },
       inject: [config.KEY]
     }
